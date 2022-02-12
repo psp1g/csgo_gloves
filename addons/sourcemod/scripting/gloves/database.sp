@@ -42,19 +42,22 @@ public void T_GetPlayerDataCallback(Database database, DBResultSet results, cons
 			g_iGroup[client][CS_TEAM_T] = 0;
 			g_iGloves[client][CS_TEAM_T] = 0;
 			g_fFloatValue[client][CS_TEAM_T] = 0.0;
+			g_iGloveSeed[target][CS_TEAM_T] = GetRandomInt(1, 1000);
 			g_iGroup[client][CS_TEAM_CT] = 0;
 			g_iGloves[client][CS_TEAM_CT] = 0;
 			g_fFloatValue[client][CS_TEAM_CT] = 0.0;
+			g_iGloveSeed[target][CS_TEAM_CT] = GetRandomInt(1, 1000);
 		}
 		else
 		{
 			if(results.FetchRow())
 			{
-				for(int i = 1, j = 2; j < 4; i += 3, j++) 
+				for(int i = 1, j = 2; j < 4; i += 4, j++) 
 				{
 					g_iGroup[client][j] = results.FetchInt(i);
 					g_iGloves[client][j] = results.FetchInt(i + 1);
 					g_fFloatValue[client][j] = results.FetchFloat(i + 2);
+					g_iGloveSeed[client][j] = results.FetchInt(i + 3);
 				}
 			}
 		}
@@ -98,7 +101,7 @@ public void SQLConnectCallback(Database database, const char[] error, any data)
 		char createQuery[1024];
 		char dbIdentifier[10];
 
-		Format(createQuery, sizeof(createQuery), "CREATE TABLE IF NOT EXISTS %sgloves (steamid varchar(32) NOT NULL PRIMARY KEY, t_group int(5) NOT NULL DEFAULT '0', t_glove int(5) NOT NULL DEFAULT '0', t_float decimal(3,2) NOT NULL DEFAULT '0.0', ct_group int(5) NOT NULL DEFAULT '0', ct_glove int(5) NOT NULL DEFAULT '0', ct_float decimal(3,2) NOT NULL DEFAULT '0.0')", g_TablePrefix);
+		Format(createQuery, sizeof(createQuery), "CREATE TABLE IF NOT EXISTS %sgloves (steamid varchar(32) NOT NULL PRIMARY KEY, t_group int(5) NOT NULL DEFAULT '0', t_glove int(5) NOT NULL DEFAULT '0', t_float decimal(3,2) NOT NULL DEFAULT '0.0', t_seed int(5) NOT NULL DEFAULT '0', ct_group int(5) NOT NULL DEFAULT '0', ct_glove int(5) NOT NULL DEFAULT '0', ct_float decimal(3,2) NOT NULL DEFAULT '0.0', ct_seed int(5) NOT NULL DEFAULT '0')", g_TablePrefix);
 		
 		db.Driver.GetIdentifier(dbIdentifier, sizeof(dbIdentifier));
 		if (StrEqual(dbIdentifier, "mysql"))
