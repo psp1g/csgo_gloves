@@ -42,11 +42,11 @@ public void T_GetPlayerDataCallback(Database database, DBResultSet results, cons
 			g_iGroup[client][CS_TEAM_T] = 0;
 			g_iGloves[client][CS_TEAM_T] = 0;
 			g_fFloatValue[client][CS_TEAM_T] = 0.0;
-			g_iGloveSeed[target][CS_TEAM_T] = GetRandomInt(1, 1000);
+			g_iGloveSeed[client][CS_TEAM_T] = GetRandomInt(1, 1000);
 			g_iGroup[client][CS_TEAM_CT] = 0;
 			g_iGloves[client][CS_TEAM_CT] = 0;
 			g_fFloatValue[client][CS_TEAM_CT] = 0.0;
-			g_iGloveSeed[target][CS_TEAM_CT] = GetRandomInt(1, 1000);
+			g_iGloveSeed[client][CS_TEAM_CT] = GetRandomInt(1, 1000);
 		}
 		else
 		{

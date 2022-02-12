@@ -63,3 +63,119 @@ stock void FixCustomArms(int client)
 		SetEntPropString(client, Prop_Send, "m_szArmsModel", "");
 	}
 }
+
+int SetClientGloves(int client, int glovesId, int glovesSkinId, bool update = true)
+{
+	int team = GetClientTeam(client);
+
+	g_iGroup[client][team] = glovesId;
+	g_iGloves[client][team] = glovesSkinId;
+
+	if (update)
+	{
+		char teamName[2];
+		if (team == CS_TEAM_CT)
+		{
+			teamName = "ct";
+		}
+		else
+		{
+			teamName = "t";
+		}
+
+		char updateFields[128];
+		Format(updateFields, sizeof(updateFields), "%s_group = %d, %s_glove = %d", teamName, glovesId, teamName, glovesSkinId);
+
+		UpdatePlayerData(client, updateFields);
+	}
+
+	RefreshGloves(client, glovesId);
+}
+
+int SetClientGlovesFloat(int client, float floatValue, bool update = true)
+{
+	int team = GetClientTeam(client);
+
+	g_fFloatValue[client][team] = floatValue;
+
+	if (update)
+	{
+		char teamName[2];
+		if (team == CS_TEAM_CT)
+		{
+			teamName = "ct";
+		}
+		else
+		{
+			teamName = "t";
+		}
+
+		char updateFields[128];
+		Format(updateFields, sizeof(updateFields), "%s_float = %.2f", teamName, floatValue);
+
+		UpdatePlayerData(client, updateFields);
+	}
+
+	GivePlayerGloves(client);
+}
+
+int SetClientGlovesSeed(int client, int seed, bool update = true)
+{
+	int team = GetClientTeam(client);
+
+	g_iGloveSeed[client][team] = seed;
+
+	if (update)
+	{
+		char teamName[2];
+		if (team == CS_TEAM_CT)
+		{
+			teamName = "ct";
+		}
+		else
+		{
+			teamName = "t";
+		}
+
+		char updateFields[128];
+		Format(updateFields, sizeof(updateFields), "%s_float = %.2f", teamName, seed);
+
+		UpdatePlayerData(client, updateFields);
+	}
+
+	GivePlayerGloves(client);
+}
+
+int RefreshGloves(int client, int index)
+{
+	int team = GetClientTeam(client);
+	int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(activeWeapon != -1)
+	{
+		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", -1);
+	}
+
+	if(index == 0)
+	{
+		int ent = GetEntPropEnt(client, Prop_Send, "m_hMyWearables");
+		if(ent != -1)
+		{
+			AcceptEntityInput(ent, "KillHierarchy");
+		}
+		SetEntPropString(client, Prop_Send, "m_szArmsModel", g_CustomArms[client][team]);
+	}
+	else
+	{
+		GivePlayerGloves(client);
+	}
+
+	if(activeWeapon != -1)
+	{
+		DataPack dpack;
+		CreateDataTimer(0.1, ResetGlovesTimer, dpack);
+		dpack.WriteCell(client);
+		dpack.WriteCell(activeWeapon);
+	}
+
+	return 0;
+}

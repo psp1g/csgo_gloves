@@ -141,31 +141,7 @@ public int GloveMainMenuHandler(Menu menu, MenuAction action, int client, int se
 					
 					if(team == GetClientTeam(client))
 					{
-						int activeWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-						if(activeWeapon != -1)
-						{
-							SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", -1);
-						}
-						if(index == 0)
-						{
-							int ent = GetEntPropEnt(client, Prop_Send, "m_hMyWearables");
-							if(ent != -1)
-							{
-								AcceptEntityInput(ent, "KillHierarchy");
-							}
-							SetEntPropString(client, Prop_Send, "m_szArmsModel", g_CustomArms[client][team]);
-						}
-						else
-						{
-							GivePlayerGloves(client);
-						}
-						if(activeWeapon != -1)
-						{
-							DataPack dpack;
-							CreateDataTimer(0.1, ResetGlovesTimer, dpack);
-							dpack.WriteCell(client);
-							dpack.WriteCell(activeWeapon);
-						}
+						RefreshGloves(client, index);
 					}
 					
 					DataPack pack;

@@ -21,6 +21,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("Gloves_RegisterCustomArms", Native_RegisterCustomArms);
 	CreateNative("Gloves_SetArmsModel", Native_SetArmsModel);
 	CreateNative("Gloves_GetArmsModel", Native_GetArmsModel);
+	CreateNative("Gloves_SetGlovesWithSkin", Native_SetGlovesWithSkin);
+	CreateNative("Gloves_SetGlovesFloat", Native_SetGlovesFloat);
+	CreateNative("Gloves_SetGlovesSeed", Native_SetGlovesSeed);
 	return APLRes_Success;
 }
 
@@ -55,4 +58,65 @@ public int Native_GetArmsModel(Handle plugin, int numParams)
 	int playerTeam = GetClientTeam(clientIndex);
 	int size = GetNativeCell(3);
 	SetNativeString(2, g_CustomArms[clientIndex][playerTeam], size);
+}
+
+public int Native_SetGlovesWithSkin(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	if (client < 1 || client > MaxClients)
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%d).", client);
+	}
+	else if (!IsClientInGame(client))
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Client (%d) is not in game.", client);
+	}
+
+	int glovesId = GetNativeCell(2);
+	int glovesSkinId = GetNativeCell(3);
+
+	SetClientGloves(client, glovesId, glovesSkinId);
+
+	return 0;
+}
+
+public int Native_SetGlovesFloat(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	if (client < 1 || client > MaxClients)
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%d).", client);
+	}
+	else if (!IsClientInGame(client))
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Client (%d) is not in game.", client);
+	}
+
+	float floatValue = GetNativeCell(2);
+
+	SetClientGlovesFloat(client, floatValue);
+
+	return 0;
+}
+
+public int Native_SetGlovesSeed(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+
+	if (client < 1 || client > MaxClients)
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%d).", client);
+	}
+	else if (!IsClientInGame(client))
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Client (%d) is not in game.", client);
+	}
+
+	int seed = GetNativeCell(2);
+
+	SetClientGlovesSeed(client, seed);
+
+	return 0;
 }
